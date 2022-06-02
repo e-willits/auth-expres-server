@@ -11,9 +11,6 @@ app.use(middleware());
   
 app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
-    const {
-        userAPI, // user-scoped API calls, used in routes
-      } = envoy;
 
     console.log(envoy);
     res.send('Hello World!');
@@ -80,11 +77,6 @@ app.post('/visitor-sign-out', async (req, res) => {
     
     res.send({ goodbye });
 });
-
-app.post('/work-schedule', asyncHandler(async (req, res) => {
-    // const {envoy} = req.envoy;
-    // req.work()
-}));
 
 app.use(errorMiddleware());
 
