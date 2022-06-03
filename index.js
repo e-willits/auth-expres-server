@@ -69,21 +69,25 @@ app.use(middleware());
 app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
-    result.locations = await envoyAPI.location('143497');
+    // result.locations = await envoyAPI.location('143497');
     // result.createWorkSchedule = await envoyAPI.workSchedule({
     //     'locationId': '143497', 
     //     'email': 'fakefakefake@fakeMail.com', 
     //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
     // })
-    res.send(result);
-}));
+    // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
 
-app.get('/employee-sign-in', asyncHandler(async (req, res) => {
+    result.workSchedules = await envoyAPI.workSchedules();  
+
+    res.send(result);
+})); 
+   
+app.get('/employee-sign-in', asyncHandler(async (req, res) => { 
     const { envoy } = req;
 
-    res.send('Sign In Hook Test');
+    res.send('Sign In Hook Test'); 
 }));
-
+ 
 app.post('/hello-options', (req, res) => {
     res.send([
         {
