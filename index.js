@@ -52,13 +52,14 @@ async function getAccessToken() {
     });
 
 }
+
 getAccessToken();
 
 /**
  * "middleware()" returns an instance of bodyParser.json,
  * that also verifies the Envoy signature in addition to
  * parsing the request body as JSON.
- */
+ */  
 app.use(middleware());
 
 
@@ -69,19 +70,24 @@ app.use(middleware());
 app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
-    // result.locations = await envoyAPI.location('143497');
     // result.createWorkSchedule = await envoyAPI.workSchedule({
-    //     'locationId': '143497', 
-    //     'email': 'fakefakefake@fakeMail.com', 
-    //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
-    // })
-    // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
+        //     'locationId': '143497', 
+        //     'email': 'fakefakefake@fakeMail.com', 
+        //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
+        // })
+        // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
+        
 
-    result.workSchedules = await envoyAPI.workSchedules();  
-
+    // Test cases
+    // result.locations = await envoyAPI.location('143497');
+    // result.workSchedules = await envoyAPI.workSchedules();  
+    // result.company = await envoyAPI.companies(); 
+    // result.employeeRecords = await envoyAPI.importEmployeeRecords('asdf', '4d0e94e558795d6a31ec14dde63d6235');
+    result.entry = await envoyAPI.entry(108010371);
+  
     res.send(result);
 })); 
-   
+    
 app.get('/employee-sign-in', asyncHandler(async (req, res) => { 
     const { envoy } = req;
 
