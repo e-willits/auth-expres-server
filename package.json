@@ -23,6 +23,7 @@
   "homepage": "https://github.com/tkla/envoy-dummy-nodejs#readme",
   "dependencies": {
     "@envoy/envoy-integrations-sdk": "git+https://github.com/envoy/envoy-integrations-sdk-nodejs.git#enable-public-api",
+    "axios": "^0.27.2",
     "express": "^4.18.1"
   }
 }
