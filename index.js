@@ -16,6 +16,14 @@ app.get('/', asyncHandler(async (req, res) => {
     res.send('Hello World!');
 }));
   
+app.get('/employee-sign-in', asyncHandler(async (req, res) => {
+    const { envoy } = req;  // "envoy" is the SDK
+
+    
+    console.log(envoy);
+    res.send('Hello World!');
+}));
+
 app.post('/hello-options', (req, res) => {
     res.send([
       {
