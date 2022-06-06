@@ -8,8 +8,8 @@ let envoyAPI = '';
 
 // Define scope for token here
 const TOKEN_SCOPE = [
-    'token.refresh', 
-    'locations.read', 
+    'token.refresh',
+    'locations.read',
     'companies.read',
     'flows.read',
     'invites.read',
@@ -20,6 +20,42 @@ const TOKEN_SCOPE = [
     'work-schedules.read',
     'work-schedules.write',
 ].join();
+
+const ENTRY_TEST = {
+    "data":{
+        "attributes":{
+            "locality":{ "place-id":"143497"},
+            "user-data":{
+                "Purpose of visit":"Visiting",
+                "Your Email Address":"nicole.j@adomain.tld",
+                "Host":"Stephen Arsenault",
+                "Your Full Name":"Nicole Jacinto"
+            },
+            "full-name":"Nicole Jacinto",
+            "email":"nicole.j@adomain.tld",
+            "private-notes":"This private note is optional and not visible to your visitor",
+            "print-badge":false,
+            "send-host-notification":false,
+            "current-location-id":143497,
+            "flow-name":"Visitor",
+            "finalized-at":"2022-06-06T15:52:00Z"},
+            "relationships":{
+                "location":{
+                    "data":{
+                        "type":"locations",
+                        "id":143497
+                    }
+                },
+                "sign-in-user":{
+                    "data":{
+                        "type":"locations",
+                        "id":143497
+                    }
+                }
+            },
+            "type":"locations"
+        }
+    }
 
 /** 
  * Get an access token generated from ENVOY_CLIENT_ID and ENVOY_CLIENT_SECRET provided from env file. 
@@ -43,7 +79,7 @@ async function getAccessToken() {
             'grant_type': 'password',
         }
     };
-    
+
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
@@ -59,7 +95,7 @@ getAccessToken();
  * "middleware()" returns an instance of bodyParser.json,
  * that also verifies the Envoy signature in addition to
  * parsing the request body as JSON.
- */  
+ */
 app.use(middleware());
 
 
@@ -71,29 +107,42 @@ app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
     // result.createWorkSchedule = await envoyAPI.workSchedule({
-        //     'locationId': '143497', 
-        //     'email': 'fakefakefake@fakeMail.com', 
-        //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
-        // })
-        // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
-        
+    //     'locationId': '143497', 
+    //     'email': 'fakefakefake@fakeMail.com', 
+    //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
+    // })
+    // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
+
 
     // Test cases
     // result.locations = await envoyAPI.location('143497');
     // result.workSchedules = await envoyAPI.workSchedules();  
     // result.company = await envoyAPI.companies(); 
+
+    // Possible deprecated API?
+    // Try this URL https://app.envoy.com/a/visitors/api/v3/employees/upload
     // result.employeeRecords = await envoyAPI.importEmployeeRecords('asdf', '4d0e94e558795d6a31ec14dde63d6235');
-    result.entry = await envoyAPI.entry(108010371);
-  
-    res.send(result);
-})); 
+
+    // result.entry = await envoyAPI.entry('108010371');
+    //"{\"data\":{\"attributes\":{\"locality\":{\"place-id\":\"143497\"},\"user-data\":{\"Purpose of visit\":\"Visiting\",\"Your Email Address\":\"nicole.j@adomain.tld\",\"Host\":\"Stephen Arsenault\",\"Your Full Name\":\"Nicole Jacinto\"},\"full-name\":\"Nicole Jacinto\",\"email\":\"nicole.j@adomain.tld\",\"private-notes\":\"This private note is optional and not visible to your visitor\",\"print-badge\":false,\"send-host-notification\":false,\"current-location-id\":46424,\"flow-name\":\"Visitor\",\"finalized-at\":\"2019-07-17T10:52:00Z\"},\"relationships\":{\"location\":{\"data\":{\"type\":\"locations\",\"id\":36960}},\"sign-in-user\":{\"data\":{\"type\":\"locations\",\"id\":36960}}},\"type\":\"locations\"}}"
     
-app.get('/employee-sign-in', asyncHandler(async (req, res) => { 
+    // result.entryPatch = await envoyAPI.patchEntry({
+    //     'entry-id': '108010371',
+    //     'X-CSRF-Token': '6b742fe43c754d7dc4f14ba67xxxxxxxxbe1d7faca6d38637f37f11xxxxxxxx',
+    //     'Accept': "{\"data\":{\"attributes\":{\"locality\":{\"place-id\":\"143497\"},\"user-data\":{\"Purpose of visit\":\"Visiting\",\"Your Email Address\":\"nicole.j@adomain.tld\",\"Host\":\"Stephen Arsenault\",\"Your Full Name\":\"Nicole Jacinto\"},\"full-name\":\"Nicole Jacinto\",\"email\":\"nicole.j@adomain.tld\",\"private-notes\":\"This private note is optional and not visible to your visitor\",\"print-badge\":false,\"send-host-notification\":false,\"current-location-id\":46424,\"flow-name\":\"Visitor\",\"finalized-at\":\"2019-07-17T10:52:00Z\"},\"relationships\":{\"location\":{\"data\":{\"type\":\"locations\",\"id\":36960}},\"sign-in-user\":{\"data\":{\"type\":\"locations\",\"id\":36960}}},\"type\":\"locations\"}}"
+    
+    // })
+    result.createEntry = await envoyAPI.createEntry(ENTRY_TEST) ;
+         
+    res.send(result);
+}));
+
+app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     const { envoy } = req;
 
-    res.send('Sign In Hook Test'); 
+    res.send('Sign In Hook Test');
 }));
- 
+
 app.post('/hello-options', (req, res) => {
     res.send([
         {
