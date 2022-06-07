@@ -146,9 +146,10 @@ app.get('/', asyncHandler(async (req, res) => {
     //         email: 'tkla+sdk@envoy.com',
     //         expectedArrivalAt: '1900-06-06T15:52:00Z'    
     //     }
-    // })
-     
- 
+    // }) 
+    // result.deleteWorkSchedule = await envoyAPI.deleteWorkSchedule(36766342); 
+          
+    
     res.send(result);
 }));
 
