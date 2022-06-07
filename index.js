@@ -64,10 +64,10 @@ const ENTRY_TEST = {
  * Token will eventually expire and is meant only to be used for testing envoyAPI in the brief time this app is ran. 
  * 
 */
-async function getAccessToken() {
+async function getAccessToken(AuthURL) {
     var options = {
         'method': 'POST',
-        'url': 'https://api.envoy.com/oauth2/token',
+        'url': AuthURL,
         'headers': {
             'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
             json: true
@@ -83,13 +83,12 @@ async function getAccessToken() {
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
-        console.log(accessToken);
+        console.log("Access Token: " + accessToken);
         envoyAPI = new EnvoyAPI(accessToken);
     });
-
 }
-
-getAccessToken();
+// getAccessToken('https://app.envoy.com/a/auth/v0/token');
+getAccessToken('https://api.envoy.com/oauth2/token');
 
 /**
  * "middleware()" returns an instance of bodyParser.json,
@@ -98,7 +97,7 @@ getAccessToken();
  */
 app.use(middleware());
 
-
+ 
 /**
  * Default landing page. Place any API calls here to be ran on page load. 
  * A useful company id for testing is 110090, Test Company 1. LocationId : 143497
@@ -106,34 +105,50 @@ app.use(middleware());
 app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
-    // result.createWorkSchedule = await envoyAPI.workSchedule({
-    //     'locationId': '143497', 
-    //     'email': 'fakefakefake@fakeMail.com', 
-    //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
-    // })
-    // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
-
-
+    
     // Test cases
+
+    // Locations
     // result.locations = await envoyAPI.location('143497');
-    // result.workSchedules = await envoyAPI.workSchedules();  
+
+    // Companies
     // result.company = await envoyAPI.companies(); 
 
+    // Employee Import
     // Possible deprecated API?
     // Try this URL https://app.envoy.com/a/visitors/api/v3/employees/upload
     // result.employeeRecords = await envoyAPI.importEmployeeRecords('asdf', '4d0e94e558795d6a31ec14dde63d6235');
 
+    // Entry
     // result.entry = await envoyAPI.entry('108010371');
-    //"{\"data\":{\"attributes\":{\"locality\":{\"place-id\":\"143497\"},\"user-data\":{\"Purpose of visit\":\"Visiting\",\"Your Email Address\":\"nicole.j@adomain.tld\",\"Host\":\"Stephen Arsenault\",\"Your Full Name\":\"Nicole Jacinto\"},\"full-name\":\"Nicole Jacinto\",\"email\":\"nicole.j@adomain.tld\",\"private-notes\":\"This private note is optional and not visible to your visitor\",\"print-badge\":false,\"send-host-notification\":false,\"current-location-id\":46424,\"flow-name\":\"Visitor\",\"finalized-at\":\"2019-07-17T10:52:00Z\"},\"relationships\":{\"location\":{\"data\":{\"type\":\"locations\",\"id\":36960}},\"sign-in-user\":{\"data\":{\"type\":\"locations\",\"id\":36960}}},\"type\":\"locations\"}}"
-    
     // result.entryPatch = await envoyAPI.patchEntry({
     //     'entry-id': '108010371',
     //     'X-CSRF-Token': '6b742fe43c754d7dc4f14ba67xxxxxxxxbe1d7faca6d38637f37f11xxxxxxxx',
     //     'Accept': "{\"data\":{\"attributes\":{\"locality\":{\"place-id\":\"143497\"},\"user-data\":{\"Purpose of visit\":\"Visiting\",\"Your Email Address\":\"nicole.j@adomain.tld\",\"Host\":\"Stephen Arsenault\",\"Your Full Name\":\"Nicole Jacinto\"},\"full-name\":\"Nicole Jacinto\",\"email\":\"nicole.j@adomain.tld\",\"private-notes\":\"This private note is optional and not visible to your visitor\",\"print-badge\":false,\"send-host-notification\":false,\"current-location-id\":46424,\"flow-name\":\"Visitor\",\"finalized-at\":\"2019-07-17T10:52:00Z\"},\"relationships\":{\"location\":{\"data\":{\"type\":\"locations\",\"id\":36960}},\"sign-in-user\":{\"data\":{\"type\":\"locations\",\"id\":36960}}},\"type\":\"locations\"}}"
     
+    // }) 
+    // result.createEntry = await envoyAPI.createEntry(ENTRY_TEST); 
+
+    // result.getEntries = await envoyAPI.getEntriesByDate({
+    //     location: 143497,
+    //     limit: 25,
+    //     offset: 0,
+    //     start_date: '2019-01-02',
+    //     end_date: '2022-06-01'
     // })
-    result.createEntry = await envoyAPI.createEntry(ENTRY_TEST) ;
-         
+
+    // Work Schedule 
+    // result.workSchedules = await envoyAPI.workSchedules({createdAtAfter: "2021-06-06T15:52:00Z"});   
+    // result.workSchedule = await envoyAPI.workSchedule('36554098');   
+    // result.createWorkSchedule = await envoyAPI.createWorkSchedule({
+    //     workSchedule: {
+    //         locationId: 143497,
+    //         email: 'tkla+sdk@envoy.com',
+    //         expectedArrivalAt: '1900-06-06T15:52:00Z'    
+    //     }
+    // })
+     
+ 
     res.send(result);
 }));
 
