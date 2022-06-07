@@ -14,6 +14,7 @@ const TOKEN_SCOPE = [
     'flows.read',
     'invites.read',
     'invites.write',
+    'invites.attest',
     'employees.read',
     'reservations.read',
     'reservations.write',
@@ -154,6 +155,17 @@ app.get('/', asyncHandler(async (req, res) => {
     result.checkIn = await envoyAPI.checkOutWork(36766996);
      
     */
+ 
+    // Invites
+    // result.invites = await envoyAPI.getInvite(29168507);
+    // See invites API documentation for all params.
+    // result.invites = await envoyAPI.getInvites({
+    //     locationId: 143497,
+    //     page: 1,
+    //     perPage: 100
+    // })
+
+    result.createInvite = await envoyAPI.createInviteV1();
     res.send(result);
 }));
 
