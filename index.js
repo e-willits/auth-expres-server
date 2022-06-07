@@ -105,14 +105,14 @@ app.use(middleware());
 app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
-    
+    /*
     // Test cases
 
     // Locations
-    // result.locations = await envoyAPI.location('143497');
+    result.locations = await envoyAPI.location('143497');
 
     // Companies
-    // result.company = await envoyAPI.companies(); 
+    result.company = await envoyAPI.companies(); 
 
     // Employee Import
     // Possible deprecated API?
@@ -120,36 +120,40 @@ app.get('/', asyncHandler(async (req, res) => {
     // result.employeeRecords = await envoyAPI.importEmployeeRecords('asdf', '4d0e94e558795d6a31ec14dde63d6235');
 
     // Entry
-    // result.entry = await envoyAPI.entry('108010371');
-    // result.entryPatch = await envoyAPI.patchEntry({
-    //     'entry-id': '108010371',
-    //     'X-CSRF-Token': '6b742fe43c754d7dc4f14ba67xxxxxxxxbe1d7faca6d38637f37f11xxxxxxxx',
-    //     'Accept': "{\"data\":{\"attributes\":{\"locality\":{\"place-id\":\"143497\"},\"user-data\":{\"Purpose of visit\":\"Visiting\",\"Your Email Address\":\"nicole.j@adomain.tld\",\"Host\":\"Stephen Arsenault\",\"Your Full Name\":\"Nicole Jacinto\"},\"full-name\":\"Nicole Jacinto\",\"email\":\"nicole.j@adomain.tld\",\"private-notes\":\"This private note is optional and not visible to your visitor\",\"print-badge\":false,\"send-host-notification\":false,\"current-location-id\":46424,\"flow-name\":\"Visitor\",\"finalized-at\":\"2019-07-17T10:52:00Z\"},\"relationships\":{\"location\":{\"data\":{\"type\":\"locations\",\"id\":36960}},\"sign-in-user\":{\"data\":{\"type\":\"locations\",\"id\":36960}}},\"type\":\"locations\"}}"
+    result.entry = await envoyAPI.entry('108010371');
+    result.entryPatch = await envoyAPI.patchEntry({
+        'entry-id': '108010371',
+        'X-CSRF-Token': '6b742fe43c754d7dc4f14ba67xxxxxxxxbe1d7faca6d38637f37f11xxxxxxxx',
+        'Accept': "{\"data\":{\"attributes\":{\"locality\":{\"place-id\":\"143497\"},\"user-data\":{\"Purpose of visit\":\"Visiting\",\"Your Email Address\":\"nicole.j@adomain.tld\",\"Host\":\"Stephen Arsenault\",\"Your Full Name\":\"Nicole Jacinto\"},\"full-name\":\"Nicole Jacinto\",\"email\":\"nicole.j@adomain.tld\",\"private-notes\":\"This private note is optional and not visible to your visitor\",\"print-badge\":false,\"send-host-notification\":false,\"current-location-id\":46424,\"flow-name\":\"Visitor\",\"finalized-at\":\"2019-07-17T10:52:00Z\"},\"relationships\":{\"location\":{\"data\":{\"type\":\"locations\",\"id\":36960}},\"sign-in-user\":{\"data\":{\"type\":\"locations\",\"id\":36960}}},\"type\":\"locations\"}}"
     
-    // }) 
-    // result.createEntry = await envoyAPI.createEntry(ENTRY_TEST); 
+    }) 
+    result.createEntry = await envoyAPI.createEntry(ENTRY_TEST); 
 
-    // result.getEntries = await envoyAPI.getEntriesByDate({
-    //     location: 143497,
-    //     limit: 25,
-    //     offset: 0,
-    //     start_date: '2019-01-02',
-    //     end_date: '2022-06-01'
-    // })
+    result.getEntries = await envoyAPI.getEntriesByDate({
+        location: 143497,
+        limit: 25,
+        offset: 0,
+        start_date: '2019-01-02',
+        end_date: '2022-06-01'
+    })
 
     // Work Schedule 
-    // result.workSchedules = await envoyAPI.workSchedules({createdAtAfter: "2021-06-06T15:52:00Z"});   
-    // result.workSchedule = await envoyAPI.workSchedule('36554098');   
-    // result.createWorkSchedule = await envoyAPI.createWorkSchedule({
-    //     workSchedule: {
-    //         locationId: 143497,
-    //         email: 'tkla+sdk@envoy.com',
-    //         expectedArrivalAt: '1900-06-06T15:52:00Z'    
-    //     }
-    // }) 
+    result.workSchedules = await envoyAPI.workSchedules({createdAtAfter: "2021-06-06T15:52:00Z"});   
+    result.workSchedule = await envoyAPI.workSchedule('36554098');   
+    result.createWorkSchedule = await envoyAPI.createWorkSchedule({
+        workSchedule: {
+            locationId: 143497,
+            email: 'tkla+sdk@envoy.com',
+            expectedArrivalAt: '1900-06-06T15:52:00Z'    
+        }
+    }) 
     // result.deleteWorkSchedule = await envoyAPI.deleteWorkSchedule(36766342); 
           
-    
+    // Check In
+    result.checkIn = await envoyAPI.checkInWork(36766996);
+    result.checkIn = await envoyAPI.checkOutWork(36766996);
+     
+    */
     res.send(result);
 }));
 
