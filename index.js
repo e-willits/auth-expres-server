@@ -176,9 +176,39 @@ app.get('/', asyncHandler(async (req, res) => {
     
     //     } 
     // });  
-    res.send(result);
-}));
 
+    // result.updateInvite = await envoyAPI.updateInviteV1(36947980,{
+    //     "invite": {
+    //         "expectedArrivalAt": "2010-12-03T10:15:30Z",
+    //         "invitee": {
+    //             "name": "Who?"
+    //         },
+    //         "locationId": 143497
+    
+    //     }
+    // })
+    // result.removeInvite = await envoyAPI.removeInvite(36752252);
+    
+    
+    // Reservations.
+    // result.reserve = await envoyAPI.reservations(); 
+    // result.reserve = await envoyAPI.reservation(2); 
+    // result.reserve = await envoyAPI.createReservation(); 
+    // result.reserve = await envoyAPI.checkInReservation(3);
+    // result.reserve = await envoyAPI.checkOutReservation(234);
+    // result.reserve = await envoyAPI.cancelReservation(4);
+
+    // Spaces
+    // result.space = await envoyAPI.space(324);
+    // result.spaces = await envoyAPI.spaces({
+    //     locationIds: 143497,
+    //     page: 1,
+    //     perPage: 100
+    // });
+    
+    res.send(result);  
+}));  
+ 
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     const { envoy } = req;
 
@@ -247,7 +277,7 @@ app.post('/visitor-sign-out', async (req, res) => {
     res.send({ goodbye });
 });
 
-app.use(errorMiddleware());
+app.use(errorMiddleware()); 
 
 const listener = app.listen(process.env.PORT || 0, () => {
     console.log(`Listening on port ${listener.address().port}`);
