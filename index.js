@@ -18,6 +18,7 @@ const TOKEN_SCOPE = [
     'employees.read',
     'reservations.read',
     'reservations.write',
+    'spaces.read',
     'work-schedules.read',
     'work-schedules.write',
 ].join();
@@ -165,7 +166,16 @@ app.get('/', asyncHandler(async (req, res) => {
     //     perPage: 100
     // })
 
-    result.createInvite = await envoyAPI.createInviteV1();
+    // result.createInvite = await envoyAPI.createInviteV1({
+    //     "invite": {
+    //         "expectedArrivalAt": "2011-12-03T10:15:30Z",
+    //         "invitee": {
+    //             "name": "Benny Ka"
+    //         },
+    //         "locationId": 143497
+    
+    //     } 
+    // });  
     res.send(result);
 }));
 
