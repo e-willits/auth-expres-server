@@ -160,11 +160,11 @@ app.get('/', asyncHandler(async (req, res) => {
     // Invites
     // result.invites = await envoyAPI.getInvite(29168507);
     // See invites API documentation for all params.
-    // result.invites = await envoyAPI.getInvites({
-    //     locationId: 143497,
-    //     page: 1,
-    //     perPage: 100
-    // })
+    result.invites = await envoyAPI.getInvites({
+        locationId: 143497,
+        page: 1,
+        perPage: 100
+    })
 
     // result.createInvite = await envoyAPI.createInviteV1({
     //     "invite": {
