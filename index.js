@@ -160,11 +160,11 @@ app.get('/', asyncHandler(async (req, res) => {
     // Invites
     // result.invites = await envoyAPI.getInvite(29168507);
     // See invites API documentation for all params.
-    result.invites = await envoyAPI.getInvites({
-        locationId: 143497,
-        page: 1,
-        perPage: 100
-    })
+    // result.invites = await envoyAPI.getInvites({
+    //     locationId: 143497,
+    //     page: 1,
+    //     perPage: 100
+    // })
 
     // result.createInvite = await envoyAPI.createInviteV1({
     //     "invite": {
@@ -208,6 +208,15 @@ app.get('/', asyncHandler(async (req, res) => {
     
     res.send(result);  
 }));  
+
+app.get('/login', asyncHandler(async (req, res) => {
+    //https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=&redirect_uri={/redirected}&scope=locations.read+token.refresh
+
+}))
+
+app.get('/redirect', asyncHandler(async (req, res) => {
+    
+}))
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     const { envoy } = req;
@@ -276,7 +285,7 @@ app.post('/visitor-sign-out', async (req, res) => {
 
     res.send({ goodbye });
 });
-
+ 
 app.use(errorMiddleware()); 
 
 const listener = app.listen(process.env.PORT || 0, () => {
