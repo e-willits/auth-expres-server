@@ -23,6 +23,21 @@ const TOKEN_SCOPE = [
     'work-schedules.write',
 ]
 
+// curl --location --request POST 'https://app.envoy.com/a/auth/v0/token' \
+// --header 'Content-Type: application/json' \
+// --data-raw '{
+//    "grant_type": "authorization_code",
+//    "code": 'YeffYdJrqpVgtXwoEAkjJnMB',
+//    "client_id": '5487b92e-e2b6-11ec-811a-5b279aa41b27',
+//    "client_secret": '432669ea1d39d66996eb978f15a417a105837a74c62cf6c3c7e1c442b2339e2418d4fc28eaa8ae5e371ee8fabc49d003e2096603f086711c01798b93fac2941c'
+// }'
+
+// curl --location --request POST 'https://api.envoy.com/oauth2/token' \
+//     --header "Content-Type: application/json" \
+//     --form "code=YeffYdJrqpVgtXwoEAkjJnMB" \
+//     --form "client_id=5487b92e-e2b6-11ec-811a-5b279aa41b27" \
+//     --form "client_secret=432669ea1d39d66996eb978f15a417a105837a74c62cf6c3c7e1c442b2339e2418d4fc28eaa8ae5e371ee8fabc49d003e2096603f086711c01798b93fac2941c"\
+//     --form "grant_type=authorization_code"
 const ENTRY_TEST = {
     "data":{
         "attributes":{
@@ -99,7 +114,6 @@ getAccessToken('https://api.envoy.com/oauth2/token');
  */
 app.use(middleware());
 
- 
 /**
  * Default landing page. Place any API calls here to be ran on page load. 
  * A useful company id for testing is 110090, Test Company 1. LocationId : 143497
@@ -107,11 +121,11 @@ app.use(middleware());
 app.get('/', asyncHandler(async (req, res) => {
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
+    result.locations = await envoyAPI.location('143497');
     /*
     // Test cases
 
     // Locations
-    result.locations = await envoyAPI.location('143497');
 
     // Companies
     result.company = await envoyAPI.companies(); 
@@ -220,9 +234,8 @@ app.get('/login', asyncHandler(async (req, res) => {
     res.send("Hello");
 }))
 
-app.get('/redirect', asyncHandler(async (req, res) => {
-
-    res.send(req.query.code);
+app.post('/redirect', asyncHandler(async (req, res) => {
+    res.send(req.query);
 }))
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
