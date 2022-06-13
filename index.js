@@ -21,7 +21,7 @@ const TOKEN_SCOPE = [
     'spaces.read',
     'work-schedules.read',
     'work-schedules.write',
-].join();
+]
 
 const ENTRY_TEST = {
     "data":{
@@ -77,7 +77,7 @@ async function getAccessToken(AuthURL) {
         formData: {
             'username': process.env.API_USERNAME,
             'password': process.env.API_USER_PASSWORD,
-            'scope': TOKEN_SCOPE,
+            'scope': TOKEN_SCOPE.join(),
             'grant_type': 'password',
         }
     };
@@ -210,12 +210,19 @@ app.get('/', asyncHandler(async (req, res) => {
 }));  
 
 app.get('/login', asyncHandler(async (req, res) => {
-    //https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=&redirect_uri={/redirected}&scope=locations.read+token.refresh
+    let baseURL = 'https://app.envoy.com/a/auth/v0/authorize?response_type=code';
+    let clientID = `&client_id=${process.env.ENVOY_CLIENT_ID}`;
+    let redirectURI = `&redirect_uri=https://envoy-test-sdk.herokuapp.com/redirect`;
+    let scope = `&scope=` + TOKEN_SCOPE.join('+');
+
+    let redirectURL = baseURL + clientID + redirectURI + scope;
+    res.redirect(redirectURL);
     res.send("Hello");
 }))
 
 app.get('/redirect', asyncHandler(async (req, res) => {
-    res.send();
+
+    res.send(req.query.code);
 }))
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
