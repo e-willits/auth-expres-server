@@ -211,11 +211,11 @@ app.get('/', asyncHandler(async (req, res) => {
 
 app.get('/login', asyncHandler(async (req, res) => {
     //https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=&redirect_uri={/redirected}&scope=locations.read+token.refresh
-
+    res.send("Hello");
 }))
 
 app.get('/redirect', asyncHandler(async (req, res) => {
-    
+    res.send();
 }))
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
