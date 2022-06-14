@@ -234,7 +234,8 @@ app.get('/login', asyncHandler(async (req, res) => {
     res.send("Hello");
 }))
 
-app.post('/redirect', asyncHandler(async (req, res) => {
+app.post('/redirect', asyncHandler(async (req, res) => {    
+    console.log(req.body);
 
     res.send(req.body);
 }))
