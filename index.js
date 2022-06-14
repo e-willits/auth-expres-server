@@ -81,17 +81,23 @@ const ENTRY_TEST = {
  * Token will eventually expire and is meant only to be used for testing envoyAPI in the brief time this app is ran. 
  * 
 */
-async function getAccessToken(AuthURL) {
+async function getAccessToken(
+        AuthURL, 
+        hakai = process.env.ENVOY_CLIENT_API_KEY, 
+        devUser = process.env.API_USERNAME, 
+        devPassword = process.env.API_USER_PASSWORD,
+    ) {
+
     var options = {
         'method': 'POST',
         'url': AuthURL,
         'headers': {
-            'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
+            'Authorization': 'Basic ' + hakai,
             json: true
         },
         formData: {
-            'username': process.env.API_USERNAME,
-            'password': process.env.API_USER_PASSWORD,
+            'username': devUser,
+            'password': devPassword,
             'scope': TOKEN_SCOPE.join(),
             'grant_type': 'password',
         }
@@ -104,8 +110,9 @@ async function getAccessToken(AuthURL) {
         envoyAPI = new EnvoyAPI(accessToken);
     });
 }
+
 // getAccessToken('https://app.envoy.com/a/auth/v0/token');
-getAccessToken('https://api.envoy.com/oauth2/token');
+// getAccessToken('https://api.envoy.com/oauth2/token');
 
 /**
  * "middleware()" returns an instance of bodyParser.json,
@@ -235,9 +242,13 @@ app.get('/login', asyncHandler(async (req, res) => {
 }))
 
 app.post('/redirect', asyncHandler(async (req, res) => {    
-    console.log(req.body);
+    console.log(req.body); // Debug
+    let clientApiKey = req.payload.client_api_key;
+    let devId = req.payload.dev_id;
+    let devPass = req.payload.dev_pass;
 
-    res.send(req.body);
+    getAccessToken('https://api.envoy.com/oauth2/token', clientApiKey, devId, devPass);
+    res.send('Success');
 }))
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
