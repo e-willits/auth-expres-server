@@ -235,7 +235,8 @@ app.get('/login', asyncHandler(async (req, res) => {
 }))
 
 app.post('/redirect', asyncHandler(async (req, res) => {
-    res.send(req.query);
+
+    res.send(req.body);
 }))
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
