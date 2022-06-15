@@ -3,6 +3,8 @@ const request = require('request');
 const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 const PORT = 3000;
 const app = express();
+const vision = require('@google-cloud/vision');
+const visionClient = new vision.ImageAnnotatorClient();
 let accessToken = '';
 let envoyAPI = '';
 
@@ -225,9 +227,9 @@ app.get('/login', asyncHandler(async (req, res) => {
     res.send("Hello");
 }))
 
-app.post('/redirect', asyncHandler(async (req, res) => {    
+app.post('/login-redirect', asyncHandler(async (req, res) => {    
     // console.log(req.body);
-    let clientApiKey = req.body.payload.client_api_key;
+    let clientApiKey = process.env.ENVOY_CLIENT_API_KEY || req.body.payload.client_api_key;
     let username = req.body.payload.dev_id;
     let password = req.body.payload.dev_pass;
 
@@ -237,10 +239,18 @@ app.post('/redirect', asyncHandler(async (req, res) => {
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     const { envoy } = req;
-
     res.send('Sign In Hook Test');
 }));
  
+app.get('/photo', asyncHandler(async (req, res) => {
+    const [result] = await visionClient.logoDetection('./resources/nintendo-logo.jpg');
+    const labels = result.labelAnnotations;
+    const logos = result.logoAnnotations;
+    // console.log('Logos:');
+    logos.forEach(logo => console.log(logo));
+    res.send(logos);
+}))
+
 app.use(errorMiddleware()); 
 
 const listener = app.listen(process.env.PORT || 0, () => {
