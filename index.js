@@ -14,7 +14,6 @@ const TOKEN_SCOPE = [
     'flows.read',
     'invites.read',
     'invites.write',
-    'invites.attest',
     'employees.read',
     'reservations.read',
     'reservations.write',
@@ -23,21 +22,6 @@ const TOKEN_SCOPE = [
     'work-schedules.write',
 ]
 
-// curl --location --request POST 'https://app.envoy.com/a/auth/v0/token' \
-// --header 'Content-Type: application/json' \
-// --data-raw '{
-//    "grant_type": "authorization_code",
-//    "code": 'YeffYdJrqpVgtXwoEAkjJnMB',
-//    "client_id": '5487b92e-e2b6-11ec-811a-5b279aa41b27',
-//    "client_secret": '432669ea1d39d66996eb978f15a417a105837a74c62cf6c3c7e1c442b2339e2418d4fc28eaa8ae5e371ee8fabc49d003e2096603f086711c01798b93fac2941c'
-// }'
-
-// curl --location --request POST 'https://api.envoy.com/oauth2/token' \
-//     --header "Content-Type: application/json" \
-//     --form "code=YeffYdJrqpVgtXwoEAkjJnMB" \
-//     --form "client_id=5487b92e-e2b6-11ec-811a-5b279aa41b27" \
-//     --form "client_secret=432669ea1d39d66996eb978f15a417a105837a74c62cf6c3c7e1c442b2339e2418d4fc28eaa8ae5e371ee8fabc49d003e2096603f086711c01798b93fac2941c"\
-//     --form "grant_type=authorization_code"
 const ENTRY_TEST = {
     "data":{
         "attributes":{
@@ -242,12 +226,12 @@ app.get('/login', asyncHandler(async (req, res) => {
 }))
 
 app.post('/redirect', asyncHandler(async (req, res) => {    
-    console.log(req.body); // Debug
+    // console.log(req.body);
     let clientApiKey = req.body.payload.client_api_key;
-    let devId = req.body.payload.dev_id;
-    let devPass = req.body.payload.dev_pass;
+    let username = req.body.payload.dev_id;
+    let password = req.body.payload.dev_pass;
 
-    getAccessToken('https://api.envoy.com/oauth2/token', clientApiKey, devId, devPass);
+    getAccessToken('https://api.envoy.com/oauth2/token', clientApiKey, username, password);
     res.send('Success');
 }))
  
@@ -256,68 +240,6 @@ app.get('/employee-sign-in', asyncHandler(async (req, res) => {
 
     res.send('Sign In Hook Test');
 }));
-
-app.post('/hello-options', (req, res) => {
-    res.send([
-        {
-            label: 'Hello',
-            value: 'Hello',
-        },
-        {
-            label: 'Hola',
-            value: 'Hola',
-        },
-        {
-            label: 'Aloha',
-            value: 'Aloha',
-        },
-    ]);
-});
-
-
-app.post('/goodbye-options', (req, res) => {
-    res.send([
-        {
-            label: 'Goodbye',
-            value: 'Goodbye',
-        },
-        {
-            label: 'Adios',
-            value: 'Adios',
-        },
-        {
-            label: 'Aloha',
-            value: 'Aloha',
-        },
-    ]);
-});
-
-
-app.post('/visitor-sign-in', async (req, res) => {
-    const envoy = req.envoy; // our middleware adds an "envoy" object to req.
-    const job = envoy.job;
-    const hello = envoy.meta.config.HELLO;
-    const visitor = envoy.payload;
-    const visitorName = visitor.attributes['full-name'];
-
-    const message = `${hello} ${visitorName}!`; // our custom greeting
-    await job.attach({ label: 'Hello', value: message }); // show in the Envoy dashboard.
-
-    res.send({ hello });
-});
-
-app.post('/visitor-sign-out', async (req, res) => {
-    const envoy = req.envoy; // our middleware adds an "envoy" object to req.
-    const job = envoy.job;
-    const goodbye = envoy.meta.config.GOODBYE;
-    const visitor = envoy.payload;
-    const visitorName = visitor.attributes['full-name'];
-
-    const message = `${goodbye} ${visitorName}!`;
-    await job.attach({ label: 'Goodbye', value: message });
-
-    res.send({ goodbye });
-});
  
 app.use(errorMiddleware()); 
 
