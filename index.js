@@ -98,7 +98,7 @@ async function getAccessToken(
 }
 
 // getAccessToken('https://app.envoy.com/a/auth/v0/token');
-// getAccessToken('https://api.envoy.com/oauth2/token');
+getAccessToken('https://api.envoy.com/oauth2/token');
 
 /**
  * "middleware()" returns an instance of bodyParser.json,
