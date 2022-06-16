@@ -7,6 +7,7 @@ const vision = require('@google-cloud/vision');
 const visionClient = new vision.ImageAnnotatorClient();
 const axios = require('axios');
 let accessToken = '';
+let refreshToken = '';
 let envoyAPI = '';
 
 // Define scope for token here
@@ -99,6 +100,9 @@ async function getAccessToken(
     });
 }
 
+/*
+    Get acccess token from auth code provided by external OAuth redirect url.
+*/
 async function getAccessTokenFromAuthCode(authCode){
     const response = await axios.post(
         'https://app.envoy.com/a/auth/v0/token',
@@ -113,9 +117,15 @@ async function getAccessTokenFromAuthCode(authCode){
                 'Content-Type': 'application/json'
             }
         }
-    );
+    ).then(res => {
+        accessToken = res.data.access_token;
+        refreshToken = res.data.refresh_token;
+        return res.data;
+    }).catch(error => {
+        return error;
+    });
 
-    return response.body;
+    return response;
 }
 
 async function refreshAccessToken(refreshToken) {
@@ -132,9 +142,15 @@ async function refreshAccessToken(refreshToken) {
                 'Content-Type': 'application/json'
             }
         }
-    );
+    ).then(res => {
+        accessToken = res.data.access_token;
+        refreshToken = res.data.refresh_token;
+        return res.data;
+    }).catch(error => {
+        return error;
+    });
 
-    return response.body;
+    return response.access_token;
 }
 
 // getAccessToken('https://app.envoy.com/a/auth/v0/token');
@@ -265,10 +281,9 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // let redirectURL = baseURL + clientID + redirectURI + scope;
     // res.redirect(redirectURL);
     // res.send("Hello");
-    let authCode = req.body.payload;
-    console.log(authCode);
-    console.log(req.body);
-    res.send(req.body);
+    let authCode = req.query.code;
+    await getAccessTokenFromAuthCode(authCode);
+    res.redirect('dashboard.envoy.com');
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
