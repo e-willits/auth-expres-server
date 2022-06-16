@@ -126,8 +126,16 @@ async function getAccessTokenFromAuthCode(authCode){
     }).catch(error => {
         return error;
     });
+    
     console.log(response);
-    return response;
+    if (response.access_token) {
+        return {
+            accessToken: response.access_token,
+            refreshToken: response.refresh_token,
+        }
+    } else {
+        return response;    
+    }
 }
 
 async function refreshAccessToken(refreshToken) {
