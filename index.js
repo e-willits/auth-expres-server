@@ -234,6 +234,7 @@ app.post('/login-redirect', asyncHandler(async (req, res) => {
     let password = req.body.payload.dev_password;
 
     getAccessToken('https://api.envoy.com/oauth2/token', clientApiKey, username, password);
+    res.send('Success');
 }));
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
