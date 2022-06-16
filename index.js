@@ -283,7 +283,7 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // res.send("Hello");
     let authCode = req.query.code;
     await getAccessTokenFromAuthCode(authCode);
-    res.redirect('dashboard.envoy.com');
+    res.redirect('https://dashboard.envoy.com');
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
