@@ -120,11 +120,13 @@ async function getAccessTokenFromAuthCode(authCode){
     ).then(res => {
         accessToken = res.data.access_token;
         refreshToken = res.data.refresh_token;
+        console.log('Access Token: ' + accessToken);
+        console.log('Refresh Token: ' + refreshToken)
         return res.data;
     }).catch(error => {
         return error;
     });
-
+    console.log(response);
     return response;
 }
 
