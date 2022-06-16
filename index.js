@@ -99,10 +99,9 @@ async function getAccessToken(
     });
 }
 
-async function exchangeAuthCode(authCode){
+async function getAccessTokenFromAuthCode(authCode){
     const response = await axios.post(
         'https://app.envoy.com/a/auth/v0/token',
-        // '{\n   "grant_type": "authorization_code",\n   "code": "YOUR_AUTHORIZATION_CODE",\n   "client_id": "YOUR_CLIENT_ID",\n   "client_secret": "YOUR_SECRET"\n}',
         {
             'grant_type': 'authorization_code',
             'code': authCode,
@@ -119,6 +118,24 @@ async function exchangeAuthCode(authCode){
     return response.body;
 }
 
+async function refreshAccessToken(refreshToken) {
+    const response = await axios.post(
+        'https://app.envoy.com/a/auth/v0/token',
+         {
+            'grant_type': 'refresh_token',
+            'refresh_token': refreshToken,
+            'client_id': process.env.ENVOY_CLIENT_ID,
+            'client_secret': process.env.ENVOY_CLIENT_SECRET,
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+
+    return response.body;
+}
 
 // getAccessToken('https://app.envoy.com/a/auth/v0/token');
 // getAccessToken('https://api.envoy.com/oauth2/token');
@@ -251,7 +268,7 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     let authCode = req.body.payload;
     console.log(authCode);
     console.log(req.body);
-    
+    res.send(req.body);
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
