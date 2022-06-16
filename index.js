@@ -3,8 +3,8 @@ const request = require('request');
 const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 const PORT = 3000;
 const app = express();
-const vision = require('@google-cloud/vision');
-const visionClient = new vision.ImageAnnotatorClient();
+// const vision = require('@google-cloud/vision');
+// const visionClient = new vision.ImageAnnotatorClient();
 let accessToken = '';
 let envoyAPI = '';
 
@@ -242,14 +242,14 @@ app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     res.send('Sign In Hook Test');
 }));
  
-app.get('/photo', asyncHandler(async (req, res) => {
-    const [result] = await visionClient.logoDetection('./resources/nintendo-logo.jpg');
-    const labels = result.labelAnnotations;
-    const logos = result.logoAnnotations;
-    // console.log('Logos:');
-    logos.forEach(logo => console.log(logo));
-    res.send(logos);
-}))
+// app.get('/photo', asyncHandler(async (req, res) => {
+//     const [result] = await visionClient.logoDetection('./resources/nintendo-logo.jpg');
+//     const labels = result.labelAnnotations;
+//     const logos = result.logoAnnotations;
+//     // console.log('Logos:');
+//     logos.forEach(logo => console.log(logo));
+//     res.send(logos);
+// }))
 
 app.use(errorMiddleware()); 
 
