@@ -228,14 +228,14 @@ app.get('/login', asyncHandler(async (req, res) => {
 }))
 
 app.post('/login-redirect', asyncHandler(async (req, res) => {    
-    // console.log(req.body);
-    let clientApiKey = process.env.ENVOY_CLIENT_API_KEY || req.body.payload.client_api_key;
+    console.log(req.body);
+    let clientApiKey = req.body.payload.client_api_key || process.env.ENVOY_CLIENT_API_KEY;
     let username = req.body.payload.dev_id;
-    let password = req.body.payload.dev_pass;
+    let password = req.body.payload.dev_password;
 
     getAccessToken('https://api.envoy.com/oauth2/token', clientApiKey, username, password);
     res.send('Success');
-}))
+}));
  
 app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     const { envoy } = req;
