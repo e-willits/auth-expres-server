@@ -3,8 +3,9 @@ const request = require('request');
 const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 const PORT = 3000;
 const app = express();
-// const vision = require('@google-cloud/vision');
-// const visionClient = new vision.ImageAnnotatorClient();
+const vision = require('@google-cloud/vision');
+const visionClient = new vision.ImageAnnotatorClient();
+const axios = require('axios');
 let accessToken = '';
 let envoyAPI = '';
 
@@ -69,7 +70,7 @@ const ENTRY_TEST = {
 */
 async function getAccessToken(
         AuthURL, 
-        hakai = process.env.ENVOY_CLIENT_API_KEY, 
+        apiKey = process.env.ENVOY_CLIENT_API_KEY, 
         devUser = process.env.API_USERNAME, 
         devPassword = process.env.API_USER_PASSWORD,
     ) {
@@ -78,7 +79,7 @@ async function getAccessToken(
         'method': 'POST',
         'url': AuthURL,
         'headers': {
-            'Authorization': 'Basic ' + hakai,
+            'Authorization': 'Basic ' + apiKey,
             json: true
         },
         formData: {
@@ -92,13 +93,35 @@ async function getAccessToken(
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
-        console.log("Access Token: " + accessToken);
+        refreshToken = JSON.parse(response.body).refresh_token;
+        console.log("\nAccess Token: " + accessToken + '\n', "\nRefresh Token: " + refreshToken);
         envoyAPI = new EnvoyAPI(accessToken);
     });
 }
 
+async function exchangeAuthCode(authCode){
+    const response = await axios.post(
+        'https://app.envoy.com/a/auth/v0/token',
+        // '{\n   "grant_type": "authorization_code",\n   "code": "YOUR_AUTHORIZATION_CODE",\n   "client_id": "YOUR_CLIENT_ID",\n   "client_secret": "YOUR_SECRET"\n}',
+        {
+            'grant_type': 'authorization_code',
+            'code': authCode,
+            'client_id': process.env.ENVOY_CLIENT_ID,
+            'client_secret': process.env.ENVOY_CLIENT_SECRET,
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+
+    return response.body;
+}
+
+
 // getAccessToken('https://app.envoy.com/a/auth/v0/token');
-getAccessToken('https://api.envoy.com/oauth2/token');
+// getAccessToken('https://api.envoy.com/oauth2/token');
 
 /**
  * "middleware()" returns an instance of bodyParser.json,
@@ -216,18 +239,22 @@ app.get('/', asyncHandler(async (req, res) => {
     res.send(result);  
 }));  
 
-app.get('/login', asyncHandler(async (req, res) => {
-    let baseURL = 'https://app.envoy.com/a/auth/v0/authorize?response_type=code';
-    let clientID = `&client_id=${process.env.ENVOY_CLIENT_ID}`;
-    let redirectURI = `&redirect_uri=https://envoy-test-sdk.herokuapp.com/redirect`;
-    let scope = `&scope=` + TOKEN_SCOPE.join('+');
+app.get('/external-login', asyncHandler(async (req, res) => {
+    // let baseURL = 'https://app.envoy.com/a/auth/v0/authorize?response_type=code';
+    // let clientID = `&client_id=${process.env.ENVOY_CLIENT_ID}`;
+    // let redirectURI = `&redirect_uri=https://envoy-test-sdk.herokuapp.com/login`;
+    // let scope = `&scope=` + TOKEN_SCOPE.join('+');
 
-    let redirectURL = baseURL + clientID + redirectURI + scope;
-    res.redirect(redirectURL);
-    res.send("Hello");
+    // let redirectURL = baseURL + clientID + redirectURI + scope;
+    // res.redirect(redirectURL);
+    // res.send("Hello");
+    let authCode = req.body.payload;
+    console.log(authCode);
+    console.log(req.body);
+    
 }))
 
-app.post('/login-redirect', asyncHandler(async (req, res) => {    
+app.post('/plugin-login', asyncHandler(async (req, res) => {    
     console.log(req.body);
     let clientApiKey = req.body.payload.client_api_key || process.env.ENVOY_CLIENT_API_KEY;
     let username = req.body.payload.dev_id;
@@ -242,14 +269,14 @@ app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     res.send('Sign In Hook Test');
 }));
  
-// app.get('/photo', asyncHandler(async (req, res) => {
-//     const [result] = await visionClient.logoDetection('./resources/nintendo-logo.jpg');
-//     const labels = result.labelAnnotations;
-//     const logos = result.logoAnnotations;
-//     // console.log('Logos:');
-//     logos.forEach(logo => console.log(logo));
-//     res.send(logos);
-// }))
+app.get('/photo', asyncHandler(async (req, res) => {
+    const [result] = await visionClient.logoDetection('./resources/google-logo.webp');
+    const labels = result.labelAnnotations;
+    const logos = result.logoAnnotations;
+    // console.log('Logos:');
+    logos.forEach(logo => console.log(logo));
+    res.send(logos);
+}))
 
 app.use(errorMiddleware()); 
 
