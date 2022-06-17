@@ -298,7 +298,7 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     setTimeout(() => {
         accessToken = '';
     }, 300000);
-    res.json({accessToken});
+    res.json({accessToken}); 
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
