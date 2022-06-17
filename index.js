@@ -293,7 +293,7 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // res.send("Hello");
     let authCode = req.query.code;
     await getAccessTokenFromAuthCode(authCode);
-    res.send(accessToken);
+    res.json({accessToken});
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
