@@ -292,7 +292,12 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // res.redirect(redirectURL);
     // res.send("Hello");
     let authCode = req.query.code;
+    res.header("Access-Control-Allow-Origin", "*");
     await getAccessTokenFromAuthCode(authCode);
+    // Demo use only.
+    setTimeout(() => {
+        accessToken = '';
+    }, 600000);
     res.json({accessToken});
 }))
 
