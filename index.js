@@ -297,7 +297,7 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // Demo use only.
     setTimeout(() => {
         accessToken = '';
-    }, 300000);
+    }, 2000);
     res.json({accessToken}); 
 }))
 
