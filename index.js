@@ -285,7 +285,7 @@ app.get('/', asyncHandler(async (req, res) => {
 app.get('/external-login', asyncHandler(async (req, res) => {
     // let baseURL = 'https://app.envoy.com/a/auth/v0/authorize?response_type=code';
     // let clientID = `&client_id=${process.env.ENVOY_CLIENT_ID}`;
-    // let redirectURI = `&redirect_uri=https://envoy-test-sdk.herokuapp.com/login`;
+    // let redirectURI = `&redirect_uri=https://envoy-test-sdk.herokuapp.com/external-login`;
     // let scope = `&scope=` + TOKEN_SCOPE.join('+');
 
     // let redirectURL = baseURL + clientID + redirectURI + scope;
@@ -293,7 +293,7 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // res.send("Hello");
     let authCode = req.query.code;
     await getAccessTokenFromAuthCode(authCode);
-    res.redirect('https://dashboard.envoy.com');
+    res.send(accessToken);
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
