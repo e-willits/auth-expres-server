@@ -6,8 +6,6 @@ const app = express();
 const vision = require('@google-cloud/vision');
 const visionClient = new vision.ImageAnnotatorClient();
 const axios = require('axios');
-let accessToken = '';
-let refreshToken = '';
 let envoyAPI = '';
 
 // Define scope for token here
@@ -93,8 +91,8 @@ async function getAccessToken(
 
     request(options, function (error, response) {
         if (error) throw new Error(error);
-        accessToken = JSON.parse(response.body).access_token;
-        refreshToken = JSON.parse(response.body).refresh_token;
+        let accessToken = JSON.parse(response.body).access_token;
+        let refreshToken = JSON.parse(response.body).refresh_token;
         console.log("\nAccess Token: " + accessToken + '\n', "\nRefresh Token: " + refreshToken);
         envoyAPI = new EnvoyAPI(accessToken);
     });
@@ -118,16 +116,11 @@ async function getAccessTokenFromAuthCode(authCode){
             }
         }
     ).then(res => {
-        accessToken = res.data.access_token;
-        refreshToken = res.data.refresh_token;
-        console.log('Access Token: ' + accessToken);
-        console.log('Refresh Token: ' + refreshToken)
         return res.data;
     }).catch(error => {
         return error;
     });
     
-    console.log(response);
     if (response.access_token) {
         return {
             accessToken: response.access_token,
@@ -153,8 +146,6 @@ async function refreshAccessToken(refreshToken) {
             }
         }
     ).then(res => {
-        accessToken = res.data.access_token;
-        refreshToken = res.data.refresh_token;
         return res.data;
     }).catch(error => {
         return error;
@@ -164,7 +155,7 @@ async function refreshAccessToken(refreshToken) {
 }
 
 // getAccessToken('https://app.envoy.com/a/auth/v0/token');
-// getAccessToken('https://api.envoy.com/oauth2/token');
+getAccessToken('https://api.envoy.com/oauth2/token');
 
 /**
  * "middleware()" returns an instance of bodyParser.json,
@@ -293,12 +284,8 @@ app.get('/external-login', asyncHandler(async (req, res) => {
     // res.send("Hello");
     let authCode = req.query.code;
     res.header("Access-Control-Allow-Origin", "*");
-    await getAccessTokenFromAuthCode(authCode);
-    // Demo use only.
-    setTimeout(() => {
-        accessToken = '';
-    }, 2000);
-    res.json({accessToken}); 
+    let tokens = await getAccessTokenFromAuthCode(authCode);
+    res.json(tokens); 
 }))
 
 app.post('/plugin-login', asyncHandler(async (req, res) => {    
@@ -316,7 +303,7 @@ app.get('/employee-sign-in', asyncHandler(async (req, res) => {
     res.send('Sign In Hook Test');
 }));
  
-app.get('/photo', asyncHandler(async (req, res) => {
+app.post('/photo', asyncHandler(async (req, res) => {
     const [result] = await visionClient.logoDetection('./resources/google-logo.webp');
     const labels = result.labelAnnotations;
     const logos = result.logoAnnotations;
